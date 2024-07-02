@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import types.Status;
 import types.Task;
 import types.Epic;
 import types.Subtask;
@@ -10,9 +9,9 @@ import types.Subtask;
 public class TaskManager {
     private Integer index = 1;
 
-    private final HashMap<Integer, Task> tasks = new HashMap<Integer, Task>();
-    private final HashMap<Integer, Epic> epics = new HashMap<Integer, Epic>();
-    private final HashMap<Integer, Subtask> subtasks = new HashMap<Integer, Subtask>();
+    private final HashMap<Integer, Task> tasks = new HashMap<>();
+    private final HashMap<Integer, Epic> epics = new HashMap<>();
+    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
 
     /** Запрос уникального идентификатора */
     public Integer getIndex() {
@@ -101,7 +100,7 @@ public class TaskManager {
     }
 
     public ArrayList<Subtask> getSubtasksByEpicId(Integer epicId) {
-        ArrayList<Subtask> result = new ArrayList<Subtask>();
+        ArrayList<Subtask> result = new ArrayList<>();
         Epic epic = epics.get(epicId);
 
         if (epic == null) {
@@ -120,7 +119,7 @@ public class TaskManager {
 
     /** Удаление всех задач */
     public void removeAllSubtasks() {
-        HashMap<Integer, Epic> epicsTouched = new HashMap<Integer, Epic>();
+        HashMap<Integer, Epic> epicsTouched = new HashMap<>();
 
         for (Subtask subtask : subtasks.values()) {
             Epic epic = subtask.getEpic();
