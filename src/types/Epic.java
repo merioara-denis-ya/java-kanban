@@ -1,53 +1,75 @@
 package types;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Epic extends Task {
-    private final HashMap<Integer, Subtask> subtasks = new HashMap<Integer, Subtask>();
+    private final HashMap<Integer, Subtask> subtasks;
 
     public Epic(int id, String name, String description, Status status) {
         super(id, name, description, status);
+        this.subtasks = new HashMap<Integer, Subtask>();
+    }
+
+    public Epic(int id, String name, String description, Status status, HashMap<Integer, Subtask> subtasks) {
+        super(id, name, description, status);
+        this.subtasks = subtasks;
     }
 
     public Epic(int id, String name, String description) {
         super(id, name, description);
+        this.subtasks = new HashMap<Integer, Subtask>();
     }
 
-    public HashMap<Integer, Subtask> getSubtasks() {
-        return subtasks;
-    }
+    public ArrayList<Subtask> getSubtasks() {
+        ArrayList<Subtask> result = new ArrayList<Subtask>();
 
-    public Epic recalculateStatus() {
-        Status nextStatus = this.getStatus();
-
-        boolean isAllStatusNew = this.getSubtasks().values().isEmpty();
-        boolean isAllStatusProgress = !this.getSubtasks().values().isEmpty();
-        boolean isAllStatusDone = !this.getSubtasks().values().isEmpty();
-
-        for (Subtask subtask : getSubtasks().values()) {
-            if (isAllStatusNew && subtask.getStatus() != Status.NEW) {
-                isAllStatusNew = false;
+        for (Subtask subtask : subtasks.values()) {
+            if (subtask.getEpic() == null) {
+                continue;
             }
-            if (isAllStatusDone && subtask.getStatus() != Status.DONE) {
-                isAllStatusDone = false;
+
+            if (subtask.getEpic().equals(this)) {
+                result.add(subtask);
             }
         }
 
-        if (isAllStatusNew) {
-            nextStatus = Status.NEW;
-        } else if (isAllStatusDone) {
-            nextStatus = Status.DONE;
+        return result;
+    }
+
+    public void recalculateStatus() {
+        ArrayList<Subtask> subtaskList = this.getSubtasks();
+
+        if (subtaskList.isEmpty()) {
+            this.status = Status.NEW;
+            return;
+        }
+
+        boolean hasNewStatus = false;
+        boolean hasProgressStatus = false;
+        boolean hasDoneStatus = false;
+
+        for (Subtask subtask : subtaskList) {
+            if (subtask.getStatus() == Status.NEW) {
+                hasNewStatus = true;
+            }
+
+            if (subtask.getStatus() == Status.IN_PROGRESS) {
+                hasProgressStatus = true;
+            }
+
+            if (subtask.getStatus() == Status.DONE) {
+                hasDoneStatus = true;
+            }
+        }
+
+        if (hasNewStatus && !hasProgressStatus && !hasDoneStatus) {
+            status = Status.NEW;
+        } else if (!hasNewStatus && !hasProgressStatus && hasDoneStatus) {
+            status = Status.DONE;
         } else {
-            nextStatus = Status.IN_PROGRESS;
+            status = Status.IN_PROGRESS;
         }
-
-        return new Epic(this.getId(), this.getName(), this.getDescription(), nextStatus);
-    }
-
-    @Override
-    public Epic setStatus(Status status) {
-        System.out.println("Обновление статуса для Epic ограничено");
-        return this;
     }
 
     @Override
