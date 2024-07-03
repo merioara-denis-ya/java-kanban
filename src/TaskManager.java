@@ -115,8 +115,8 @@ public class TaskManager {
         epics.put(itemWithSubtasks.getId(), itemWithSubtasks);
 
         for (Subtask subtask : prevEpic.getSubtasks()) {
-            Subtask SubtaskWithEpic = new Subtask(subtask.getId(), subtask.getName(), subtask.getDescription(), subtask.getStatus(), itemWithSubtasks);
-            updateSubtask(SubtaskWithEpic);
+            Subtask subtaskWithEpic = new Subtask(subtask.getId(), subtask.getName(), subtask.getDescription(), subtask.getStatus(), itemWithSubtasks);
+            updateSubtask(subtaskWithEpic);
         }
     }
 
