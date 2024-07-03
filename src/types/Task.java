@@ -3,13 +3,21 @@ package types;
 import java.util.Objects;
 
 public class Task {
-    /** Уникальный идентификационный номер задачи */
+    /**
+     * Уникальный идентификационный номер задачи
+     */
     private final int id;
-    /** Название */
+    /**
+     * Название
+     */
     private final String name;
-    /** Описание */
+    /**
+     * Описание
+     */
     private final String description;
-    /** Статус */
+    /**
+     * Статус
+     */
     protected Status status;
 
     public Task(int id, String name, String description, Status status) {
