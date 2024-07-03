@@ -4,7 +4,7 @@ public class Main {
     public static void main(String[] args) {
         TaskManager taskManager = new TaskManager();
 
-        System.out.println("- Tasks ------------------");
+        System.out.println("-- Tasks ------------------");
 
         /* Region: Создание */
         Task task1 = new Task(taskManager.getIndex(), "Вынесть мусор", "Собрать мусор из кухни, туалета и ванной");
@@ -40,7 +40,7 @@ public class Main {
         System.out.println("Получение списка всех сущностей после очистки коллекции : " + taskManager.getTasks());
         /* Region end */
 
-        System.out.println("- Epics ------------------");
+        System.out.println("-- Epics ------------------");
 
         /* Region: Создание */
         Epic epic1 = new Epic(taskManager.getIndex(), "Построить дачу", "Летная дача");
@@ -76,7 +76,7 @@ public class Main {
         System.out.println("Получение списка всех сущностей после очистки коллекции : " + taskManager.getEpics());
         /* Region end */
 
-        System.out.println("- Subtasks ------------------");
+        System.out.println("-- Subtasks ------------------");
 
         Integer epic1Id = taskManager.getIndex();
         taskManager.createEpic(new Epic(epic1Id, "Построить дачу", "Летная дача"));
