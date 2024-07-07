@@ -1,20 +1,20 @@
 package types;
 
 public class Subtask extends Task {
-    private final Epic epic;
+    protected final Integer epicId;
 
-    public Subtask(int id, String name, String description, Status status, Epic epic) {
+    public Subtask(int id, String name, String description, Status status, Integer epicId) {
         super(id, name, description, status);
-        this.epic = epic;
+        this.epicId = epicId;
     }
 
-    public Subtask(int id, String name, String description, Epic epic) {
+    public Subtask(int id, String name, String description, Integer epicId) {
         super(id, name, description);
-        this.epic = epic;
+        this.epicId = epicId;
     }
 
-    public Epic getEpic() {
-        return this.epic;
+    public Integer getEpicId() {
+        return this.epicId;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class Subtask extends Task {
                 ", name='" + this.getName() + '\'' +
                 ", description='" + this.getDescription() + '\'' +
                 ", status=" + this.getStatus() +
-                ", epicId=" + this.getEpic().getId() +
+                ", epicId=" + this.getEpicId() +
                 '}';
     }
 }

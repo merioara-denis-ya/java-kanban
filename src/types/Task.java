@@ -6,19 +6,19 @@ public class Task {
     /**
      * Уникальный идентификационный номер задачи
      */
-    private final int id;
+    protected final int id;
     /**
      * Название
      */
-    private final String name;
+    protected final String name;
     /**
      * Описание
      */
-    private final String description;
+    protected final String description;
     /**
      * Статус
      */
-    protected Status status;
+    protected final Status status;
 
     public Task(int id, String name, String description, Status status) {
         this.id = id;
