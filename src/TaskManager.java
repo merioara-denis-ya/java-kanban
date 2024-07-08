@@ -221,13 +221,11 @@ public class TaskManager {
             epicIdsTouched.add(epicId);
         }
 
-        for (Integer epicId : epicIdsTouched) {
-            Epic currentEpic = epics.get(epicId);
-            Epic nextEpic = new Epic(currentEpic.getId(), currentEpic.getName(), currentEpic.getDescription());
-            this.updateEpic(nextEpic);
-        }
-
         subtasks.clear();
+
+        for (Integer epicId : epicIdsTouched) {
+            this.recalculateStatus(epicId);
+        }
     }
 
     /**
