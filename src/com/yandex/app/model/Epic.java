@@ -1,4 +1,4 @@
-package types;
+package com.yandex.app.model;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package types;
+package com.yandex.app.model;
 
 public class Subtask extends Task {
     protected final Integer epicId;

@@ -1,4 +1,4 @@
-package types;
+package com.yandex.app.model;
 
 import java.util.Objects;
 
@@ -6,19 +6,19 @@ public class Task {
     /**
      * Уникальный идентификационный номер задачи
      */
-    protected final int id;
+    protected int id;
     /**
      * Название
      */
-    protected final String name;
+    protected String name;
     /**
      * Описание
      */
-    protected final String description;
+    protected String description;
     /**
      * Статус
      */
-    protected final Status status;
+    protected Status status;
 
     public Task(int id, String name, String description, Status status) {
         this.id = id;
