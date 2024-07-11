@@ -11,28 +11,32 @@ public class Main {
         System.out.println("-- Tasks ------------------");
 
         /* Region: Создание */
-        Task task1 = new Task(taskManager.getIndex(), "Вынесть мусор", "Собрать мусор из кухни, туалета и ванной");
-        taskManager.createTask(task1);
-        System.out.println("Создана новая задача: " + task1);
+        Task task1 = new Task("Вынесть мусор", "Собрать мусор из кухни, туалета и ванной");
+        Integer task1Id = taskManager.createTask(task1);
+        System.out.println("Создана новая задача: " + taskManager.getTaskById(task1Id));
         /* Region end */
 
         /* Region: Обновление Задачи */
+        task1 = taskManager.getTaskById(task1Id);
         task1 = new Task(task1.getId(), "name", task1.getDescription(), task1.getStatus());
         taskManager.updateTask(task1);
-        System.out.println("Обновление имени: " + task1);
+        System.out.println("Обновление имени: " + taskManager.getTaskById(task1Id));
+        task1 = taskManager.getTaskById(task1Id);
         task1 = new Task(task1.getId(), task1.getName(), "description", task1.getStatus());
         taskManager.updateTask(task1);
-        System.out.println("Обновление описания: " + task1);
+        System.out.println("Обновление описания: " + taskManager.getTaskById(task1Id));
+        task1 = taskManager.getTaskById(task1Id);
         task1 = new Task(task1.getId(), task1.getName(), task1.getDescription(), Status.IN_PROGRESS);
         taskManager.updateTask(task1);
-        System.out.println("Обновление статуса: " + task1);
+        System.out.println("Обновление статуса: " + taskManager.getTaskById(task1Id));
         /* Region end */
 
         /* Region: Получение по идентификатору */
-        Task task2 = new Task(taskManager.getIndex(), "Task name", "Task description");
-        taskManager.createTask(task2);
-        System.out.println("Создана новая задача: " + task2);
-        System.out.println("Получение по идентификатору '" + task2.getId() + "': " + taskManager.getTaskById(task2.getId()));
+        Task task2 = new Task("Task name", "Task description");
+        Integer task2Id = taskManager.createTask(task2);
+        task2 = taskManager.getTaskById(task2Id);
+        System.out.println("Создана новая задача: " + taskManager.getTaskById(task2Id));
+        System.out.println("Получение по идентификатору '" + task2Id + "': " + taskManager.getTaskById(task2Id));
         /* Region end */
 
         /* Region: Получение списка всех задач */
@@ -52,29 +56,30 @@ public class Main {
         System.out.println("-- Epics ------------------");
 
         /* Region: Создание */
-        Epic epic1 = new Epic(taskManager.getIndex(), "Построить дачу", "Летная дача");
-        taskManager.createEpic(epic1);
-        System.out.println("Создан новый эпик: " + epic1);
+        Epic epic1 = new Epic("Построить дачу", "Летная дача");
+        Integer epic1Id = taskManager.createEpic(epic1);
+        System.out.println("Создан новый эпик: " + taskManager.getEpicById(epic1Id));
         /* Region end */
 
         /* Region: Обновление Эпика */
+        epic1 = taskManager.getEpicById(epic1Id);
         epic1 = new Epic(epic1.getId(), "name", epic1.getDescription(), epic1.getStatus());
         taskManager.updateEpic(epic1);
-        System.out.println("Обновление имени: " + epic1);
+        System.out.println("Обновление имени: " + taskManager.getEpicById(epic1Id));
+        epic1 = taskManager.getEpicById(epic1Id);
         epic1 = new Epic(epic1.getId(), epic1.getName(), "description", epic1.getStatus());
         taskManager.updateEpic(epic1);
-        System.out.println("Обновление описания: " + epic1);
+        System.out.println("Обновление описания: " + taskManager.getEpicById(epic1Id));
+        epic1 = taskManager.getEpicById(epic1Id);
         epic1 = new Epic(epic1.getId(), epic1.getName(), epic1.getDescription(), Status.IN_PROGRESS);
         taskManager.updateEpic(epic1);
-        epic1 = taskManager.getEpicById(epic1.getId());
-        System.out.println("Обновление статуса: " + epic1);
+        System.out.println("Обновление статуса: " + taskManager.getEpicById(epic1Id));
         /* Region end */
 
         /* Region: Получение по идентификатору */
-        Integer epic2Id = taskManager.getIndex();
-        Epic epic2 = new Epic(epic2Id, "Epic name", "Epic description");
-        taskManager.createEpic(epic2);
-        System.out.println("Получение по идентификатору '" + epic2.getId() + "': " + taskManager.getEpicById(epic2.getId()));
+        Epic epic2 = new Epic( "Epic name", "Epic description");
+        Integer epic2Id = taskManager.createEpic(epic2);
+        System.out.println("Получение по идентификатору '" + epic2Id + "': " + taskManager.getEpicById(epic2Id));
         /* Region end */
 
         /* Region: Получение списка всех задач */
@@ -82,8 +87,8 @@ public class Main {
         /* Region end */
 
         /* Region: даление по идентификатору */
-        taskManager.removeEpicById(epic2.getId());
-        System.out.println("Получение списка всех сущностей после удаления по идентификатором '" + epic2.getId() + "': " + taskManager.getEpics());
+        taskManager.removeEpicById(epic2Id);
+        System.out.println("Получение списка всех сущностей после удаления по идентификатором '" + epic2Id + "': " + taskManager.getEpics());
         /* Region end */
 
         /* Region: Удаление всех задач */
@@ -93,37 +98,35 @@ public class Main {
 
         System.out.println("-- Subtasks ------------------");
 
-        Integer epic1Id = taskManager.getIndex();
-        taskManager.createEpic(new Epic(epic1Id, "Построить дачу", "Летная дача"));
-        taskManager.createEpic(new Epic(epic2Id, "Epic name", "Epic description"));
+        epic1Id = taskManager.createEpic(new Epic("Построить дачу", "Летная дача"));
+        epic2Id = taskManager.createEpic(new Epic("Epic name", "Epic description"));
         System.out.println("Добавим эпики для отлаки: " + taskManager.getEpics());
 
         /* Region: Создание */
-        Integer subtask1Id = taskManager.getIndex();
-        Subtask subtask1 = new Subtask(subtask1Id, "Найти участок", "минимум 1 гектар", epic1Id);
-        taskManager.createSubtask(subtask1);
-        System.out.println("Создана новая подзадача: " + subtask1);
+        Subtask subtask1 = new Subtask("Найти участок", "минимум 1 гектар", epic1Id);
+        Integer subtask1Id = taskManager.createSubtask(subtask1);
+        System.out.println("Создана новая подзадача: " + taskManager.getSubtaskById(subtask1Id));
         /* Region end */
 
         /* Region: Обновление Задачи */
         subtask1 = taskManager.getSubtaskById(subtask1Id);
         subtask1 = new Subtask(subtask1.getId(), "name", subtask1.getDescription(), subtask1.getStatus(), subtask1.getEpicId());
         taskManager.updateSubtask(subtask1);
-        System.out.println("Обновление имени: " + subtask1);
+        System.out.println("Обновление имени: " + taskManager.getSubtaskById(subtask1Id));
+        subtask1 = taskManager.getSubtaskById(subtask1Id);
         subtask1 = new Subtask(subtask1.getId(), subtask1.getName(), "description", subtask1.getStatus(), subtask1.getEpicId());
         taskManager.updateSubtask(subtask1);
-        System.out.println("Обновление описания: " + subtask1);
+        System.out.println("Обновление описания: " + taskManager.getSubtaskById(subtask1Id));
         subtask1 = taskManager.getSubtaskById(subtask1Id);
         subtask1 = new Subtask(subtask1.getId(), subtask1.getName(), subtask1.getDescription(), Status.IN_PROGRESS, subtask1.getEpicId());
         taskManager.updateSubtask(subtask1);
-        System.out.println("Обновление статуса: " + subtask1);
+        System.out.println("Обновление статуса: " + taskManager.getSubtaskById(subtask1Id));
         /* Region end */
 
         /* Region: Получение по идентификатору */
-        Integer subtask2Id = taskManager.getIndex();
-        taskManager.createSubtask(new Subtask(subtask2Id, "Subtask name", "Subtask description", epic1Id));
-        Subtask subtask2 = taskManager.getSubtaskById(subtask2Id);
-        System.out.println("Получение по идентификатору '" + subtask2.getId() + "': " + subtask2);
+        Subtask subtask2 = new Subtask("Subtask name", "Subtask description", epic1Id);
+        Integer subtask2Id = taskManager.createSubtask(subtask2);
+        System.out.println("Получение по идентификатору '" + subtask2Id + "': " + taskManager.getSubtaskById(subtask2Id));
         /* Region end */
 
         /* Region: Проверка рассчета статуса Эпика */

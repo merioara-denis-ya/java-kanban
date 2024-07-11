@@ -3,13 +3,18 @@ package com.yandex.app.model;
 public class Subtask extends Task {
     protected final Integer epicId;
 
-    public Subtask(int id, String name, String description, Status status, Integer epicId) {
-        super(id, name, description, status);
+    public Subtask(String name, String description, Integer epicId) {
+        super(name, description);
         this.epicId = epicId;
     }
 
     public Subtask(int id, String name, String description, Integer epicId) {
         super(id, name, description);
+        this.epicId = epicId;
+    }
+
+    public Subtask(int id, String name, String description, Status status, Integer epicId) {
+        super(id, name, description, status);
         this.epicId = epicId;
     }
 

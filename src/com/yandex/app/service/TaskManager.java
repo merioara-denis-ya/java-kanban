@@ -19,7 +19,7 @@ public class TaskManager {
     /**
      * Запрос уникального идентификатора
      */
-    public Integer getIndex() {
+    protected Integer getIndex() {
         return index++;
     }
 
@@ -49,8 +49,11 @@ public class TaskManager {
     /**
      * Создание задачи
      */
-    public void createTask(Task item) {
-        tasks.put(item.getId(), item);
+    public Integer createTask(Task item) {
+        Integer id = this.getIndex();
+        Task instance = new Task(id, item.getName(), item.getDescription());
+        tasks.put(instance.getId(), instance);
+        return id;
     }
 
     /**
@@ -95,8 +98,11 @@ public class TaskManager {
     /**
      * Создание эпика
      */
-    public void createEpic(Epic item) {
-        epics.put(item.getId(), item);
+    public Integer createEpic(Epic item) {
+        Integer id = this.getIndex();
+        Epic instance = new Epic(id, item.getName(), item.getDescription());
+        epics.put(id, instance);
+        return id;
     }
 
     /**
@@ -245,9 +251,12 @@ public class TaskManager {
     /**
      * Создание подзадачи
      */
-    public void createSubtask(Subtask item) {
-        subtasks.put(item.getId(), item);
-        this.linkSubtaskIdToEpicById(item.getId(), item.getEpicId());
+    public Integer createSubtask(Subtask item) {
+        Integer id = this.getIndex();
+        Subtask instance = new Subtask(id, item.getName(), item.getDescription(), item.getEpicId());
+        subtasks.put(id, instance);
+        this.linkSubtaskIdToEpicById(id, item.getEpicId());
+        return id;
     }
 
     /**
