@@ -1,7 +1,7 @@
 package com.yandex.app.model;
 
 public class Subtask extends Task {
-    protected final Integer epicId;
+    private final Integer epicId;
 
     public Subtask(String name, String description, Integer epicId) {
         super(name, description);

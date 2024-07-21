@@ -19,7 +19,7 @@ public class TaskManager {
     /**
      * Запрос уникального идентификатора
      */
-    protected Integer getIndex() {
+    private Integer getIndex() {
         return index++;
     }
 
@@ -127,13 +127,12 @@ public class TaskManager {
      * Удаление эпика
      */
     public void removeEpicById(Integer id) {
-        Epic epic = epics.get(id);
+        Epic epic = epics.remove(id);
 
         if (epic == null) {
             return;
         }
 
-        epics.remove(id);
         for(Integer subtaskId : epic.getSubtaskIds()) {
             this.removeSubtaskById(subtaskId);
         }
@@ -160,7 +159,7 @@ public class TaskManager {
         return result;
     }
 
-    public void recalculateStatus(Integer epicId) {
+    private void recalculateStatus(Integer epicId) {
         ArrayList<Subtask> subtaskList = this.getSubtasksByEpicId(epicId);
         Epic currentEpic = epics.get(epicId);
         Status currentStatus = currentEpic.getStatus();
@@ -184,9 +183,9 @@ public class TaskManager {
         for (Subtask subtask : subtaskList) {
             if (subtask.getStatus() == Status.NEW) {
                 hasNewStatus = true;
-            }
-
-            if (subtask.getStatus() == Status.IN_PROGRESS) {
+            } else if (subtask.getStatus() == Status.DONE) {
+                hasDoneStatus = true;
+            } else if (subtask.getStatus() == Status.IN_PROGRESS) {
                 if (currentEpic.getStatus() != Status.IN_PROGRESS) {
                     Epic epic = new Epic(currentEpic.getId(), currentEpic.getName(), currentEpic.getDescription(), Status.IN_PROGRESS, currentEpic.getSubtaskIds());
 
@@ -194,10 +193,6 @@ public class TaskManager {
                 }
 
                 return;
-            }
-
-            if (subtask.getStatus() == Status.DONE) {
-                hasDoneStatus = true;
             }
         }
 
@@ -297,7 +292,7 @@ public class TaskManager {
     }
 
     protected boolean checkIfSubtaskIdsIncludesSubtaskId(ArrayList<Integer> subtasks, Integer subtaskId) {
-        return subtasks.stream().anyMatch((currentSubtask) -> currentSubtask.equals(subtaskId));
+        return subtasks.contains(subtaskId);
     }
 
     public void unlinkSubtaskIdToEpicById(Integer subtaskId, Integer epicId) {

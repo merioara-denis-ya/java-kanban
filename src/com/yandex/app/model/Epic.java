@@ -3,7 +3,7 @@ package com.yandex.app.model;
 import java.util.ArrayList;
 
 public class Epic extends Task {
-    protected final ArrayList<Integer> subtaskIds;
+    private final ArrayList<Integer> subtaskIds;
 
     public Epic(String name, String description) {
         super(name, description);
