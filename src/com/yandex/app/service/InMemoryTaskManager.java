@@ -17,6 +17,19 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
 
     /**
+     * Количество задач в истории
+     */
+    private final int lengthOfHistory;
+    /**
+     * Колекция последних просмотреных задач
+     */
+    private final List<? super Task> lastViewedTasks = new ArrayList<>();
+
+    public InMemoryTaskManager() {
+        lengthOfHistory = 10;
+    }
+
+    /**
      * Запрос уникального идентификатора
      */
     private Integer getIndex() {
@@ -36,7 +49,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskById(Integer id) {
-        return tasks.get(id);
+        Task item = tasks.get(id);
+        this.addingInHistory(item);
+        return item;
     }
 
     @Override
@@ -72,7 +87,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpicById(Integer id) {
-        return epics.get(id);
+        Epic item = epics.get(id);
+        this.addingInHistory(item);
+        return item;
     }
 
     @Override
@@ -218,7 +235,9 @@ public class InMemoryTaskManager implements TaskManager {
      */
     @Override
     public Subtask getSubtaskById(Integer id) {
-        return subtasks.get(id);
+        Subtask item = subtasks.get(id);
+        this.addingInHistory(item);
+        return item;
     }
 
     /**
@@ -270,6 +289,19 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         this.unlinkSubtaskIdToEpicById(id, prevEpic.getId());
+    }
+
+    private <T extends Task> void addingInHistory(T item) {
+        lastViewedTasks.add(item);
+
+        while (lastViewedTasks.size() > this.lengthOfHistory) {
+            lastViewedTasks.removeFirst();
+        }
+    }
+
+    @Override
+    public List<? super Task> getHistory() {
+        return lastViewedTasks;
     }
 
     private boolean checkIfSubtaskIdsIncludesSubtaskId(ArrayList<Integer> subtasks, Integer subtaskId) {

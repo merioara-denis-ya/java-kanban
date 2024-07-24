@@ -64,4 +64,9 @@ public interface TaskManager {
 
     /** Удаление экземмляра типа Epic по идентификатору */
     void removeSubtaskById(Integer id);
+
+    /**
+     * История просмотреных задач
+     */
+    List<? super Task> getHistory();
 }

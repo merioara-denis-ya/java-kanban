@@ -4,12 +4,13 @@ import com.yandex.app.model.Epic;
 import com.yandex.app.model.Status;
 import com.yandex.app.model.Subtask;
 import com.yandex.app.model.Task;
-import com.yandex.app.service.InMemoryTaskManager;
+import com.yandex.app.service.Managers;
 import com.yandex.app.service.TaskManager;
+
 
 public class Main {
     public static void main(String[] args) {
-        TaskManager inMemoryTaskManager = new InMemoryTaskManager();
+        TaskManager inMemoryTaskManager = Managers.getDefault();
 
         System.out.println("-- Tasks ------------------");
 
@@ -80,7 +81,7 @@ public class Main {
         /* Region end */
 
         /* Region: Получение по идентификатору */
-        Epic epic2 = new Epic( "Epic name", "Epic description");
+        Epic epic2 = new Epic("Epic name", "Epic description");
         Integer epic2Id = inMemoryTaskManager.createEpic(epic2);
         System.out.println("Получение по идентификатору '" + epic2Id + "': " + inMemoryTaskManager.getEpicById(epic2Id));
         /* Region end */
@@ -150,7 +151,7 @@ public class Main {
         System.out.println("Получение подзадач эпика: " + inMemoryTaskManager.getSubtasksByEpicId(epic1Id));
         System.out.println("Состояние эпика: " + inMemoryTaskManager.getEpicById(epic1Id));
 
-        System.out.println(">>>>>>> Проверка статуса при изменение эпика: -------------" );
+        System.out.println(">>>>>>> Проверка статуса при изменение эпика: -------------");
         System.out.println("All subtasks (до): " + inMemoryTaskManager.getSubtasks());
         System.out.println("All epics (до): " + inMemoryTaskManager.getEpics());
         subtask1 = inMemoryTaskManager.getSubtaskById(subtask1Id);
@@ -193,6 +194,21 @@ public class Main {
         /* Region: Удаление всех задач */
         inMemoryTaskManager.removeAllSubtasks();
         System.out.println("Получение списка всех сущностей после очистки коллекции : " + inMemoryTaskManager.getSubtasks());
+        /* Region end */
+
+        /* Region: Отображение истории */
+        Integer task3Id = inMemoryTaskManager.createTask(new Task("name 3", "description 3"));
+        Integer task4Id = inMemoryTaskManager.createTask(new Task("name 4", "description 4"));
+        Integer task5Id = inMemoryTaskManager.createTask(new Task("name 5", "description 5"));
+        inMemoryTaskManager.getTaskById(task5Id);
+        inMemoryTaskManager.getTaskById(task4Id);
+        inMemoryTaskManager.getTaskById(task3Id);
+        inMemoryTaskManager.getTaskById(task5Id);
+        System.out.println("Отображение истории - последние 10 просмотренных задач");
+        int index = 1;
+        for (Object item : inMemoryTaskManager.getHistory()) {
+            System.out.println((index++) + " - " + item);
+        }
         /* Region end */
     }
 }
