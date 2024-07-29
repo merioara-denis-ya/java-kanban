@@ -1,9 +1,10 @@
 package com.yandex.app.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
-    private final ArrayList<Integer> subtaskIds;
+    private final List<Integer> subtaskIds;
 
     public Epic(String name, String description) {
         super(name, description);
@@ -20,12 +21,12 @@ public class Epic extends Task {
         this.subtaskIds = new ArrayList<>();
     }
 
-    public Epic(int id, String name, String description, Status status, ArrayList<Integer> subtaskIds) {
+    public Epic(int id, String name, String description, Status status, List<Integer> subtaskIds) {
         super(id, name, description, status);
         this.subtaskIds = subtaskIds;
     }
 
-    public ArrayList<Integer> getSubtaskIds() {
+    public List<Integer> getSubtaskIds() {
         return subtaskIds;
     }
 

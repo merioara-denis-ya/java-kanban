@@ -304,7 +304,7 @@ public class InMemoryTaskManager implements TaskManager {
         return lastViewedTasks;
     }
 
-    private boolean checkIfSubtaskIdsIncludesSubtaskId(ArrayList<Integer> subtasks, Integer subtaskId) {
+    private boolean checkIfSubtaskIdsIncludesSubtaskId(List<Integer> subtasks, Integer subtaskId) {
         return subtasks.contains(subtaskId);
     }
 
