@@ -244,7 +244,7 @@ public class InMemoryTaskManager implements TaskManager {
      * Создание подзадачи
      */
     @Override
-    public Integer createSubtask(Subtask item) {
+    public Integer createSubtask(Subtask item) throws Exception {
         Integer id = this.getIndex();
         Subtask instance = new Subtask(id, item.getName(), item.getDescription(), item.getEpicId());
         subtasks.put(id, instance);
@@ -256,7 +256,7 @@ public class InMemoryTaskManager implements TaskManager {
      * Обновление подзадачи
      */
     @Override
-    public void updateSubtask(Subtask item) {
+    public void updateSubtask(Subtask item) throws Exception {
         Subtask prevSubtask = subtasks.get(item.getId());
         subtasks.put(item.getId(), item);
 
@@ -328,11 +328,11 @@ public class InMemoryTaskManager implements TaskManager {
      * @param subtaskId Идентификатор подзадачи
      * @param epicId    Идентификатор Эпика
      */
-    private void linkSubtaskIdToEpicById(Integer subtaskId, Integer epicId) {
+    private void linkSubtaskIdToEpicById(Integer subtaskId, Integer epicId) throws Exception {
         Epic epic = epics.get(epicId);
 
         if (epic == null) {
-            return;
+            throw new Exception("Exception message");
         }
 
         boolean isSubtaskLinkedWithEpic = this.checkIfSubtaskIdsIncludesSubtaskId(epic.getSubtaskIds(), subtaskId);

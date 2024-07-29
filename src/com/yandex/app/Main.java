@@ -9,7 +9,7 @@ import com.yandex.app.service.TaskManager;
 
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         TaskManager inMemoryTaskManager = Managers.getDefault();
 
         System.out.println("-- Tasks ------------------");

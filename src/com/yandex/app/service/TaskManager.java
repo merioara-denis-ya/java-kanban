@@ -57,10 +57,10 @@ public interface TaskManager {
     Subtask getSubtaskById(Integer id);
 
     /** Создание нового экземмляра типа Epic */
-    Integer createSubtask(Subtask item);
+    Integer createSubtask(Subtask item) throws Exception;
 
     /** Обновление экземмляра типа Epic */
-    void updateSubtask(Subtask item);
+    void updateSubtask(Subtask item) throws Exception;
 
     /** Удаление экземмляра типа Epic по идентификатору */
     void removeSubtaskById(Integer id);
