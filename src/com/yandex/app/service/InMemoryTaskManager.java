@@ -15,19 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
-
-    /**
-     * Количество задач в истории
-     */
-    private final int lengthOfHistory;
-    /**
-     * Колекция последних просмотреных задач
-     */
-    private final List<? super Task> lastViewedTasks = new ArrayList<>();
-
-    public InMemoryTaskManager() {
-        lengthOfHistory = 10;
-    }
+    private final HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
 
     /**
      * Запрос уникального идентификатора
@@ -50,7 +38,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTaskById(Integer id) {
         Task item = tasks.get(id);
-        this.addingInHistory(item);
+        inMemoryHistoryManager.add(item);
         return item;
     }
 
@@ -88,7 +76,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpicById(Integer id) {
         Epic item = epics.get(id);
-        this.addingInHistory(item);
+        inMemoryHistoryManager.add(item);
         return item;
     }
 
@@ -236,7 +224,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask getSubtaskById(Integer id) {
         Subtask item = subtasks.get(id);
-        this.addingInHistory(item);
+        inMemoryHistoryManager.add(item);
         return item;
     }
 
@@ -292,18 +280,11 @@ public class InMemoryTaskManager implements TaskManager {
         this.unlinkSubtaskIdToEpicById(id, prevEpic.getId());
     }
 
-    private <T extends Task> void addingInHistory(T item) {
-        lastViewedTasks.add(item);
-
-        while (lastViewedTasks.size() > this.lengthOfHistory) {
-            lastViewedTasks.removeFirst();
-        }
-    }
-
     @Override
     public List<? super Task> getHistory() {
-        return lastViewedTasks;
+        return inMemoryHistoryManager.getHistory();
     }
+
 
     private boolean checkIfSubtaskIdsIncludesSubtaskId(List<Integer> subtasks, Integer subtaskId) {
         return subtasks.contains(subtaskId);
