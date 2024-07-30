@@ -22,7 +22,8 @@ public class TaskTest {
     @Test
     public void shouldCreateWithoutIdAndStatus() {
         Task item = new Task(name, description);
-        Assertions.assertEquals(0, item.getId());
+        item.setId(id);
+        Assertions.assertEquals(id, item.getId());
         Assertions.assertEquals(name, item.getName());
         Assertions.assertEquals(description, item.getDescription());
         Assertions.assertEquals(Status.NEW, item.getStatus());

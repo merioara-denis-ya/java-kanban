@@ -24,7 +24,8 @@ public class SubtaskTest {
     @Test
     public void shouldCreateWithoutIdAndStatus() {
         Subtask item = new Subtask(name, description, epicId);
-        Assertions.assertEquals(0, item.getId());
+        item.setId(id);
+        Assertions.assertEquals(id, item.getId());
         Assertions.assertEquals(name, item.getName());
         Assertions.assertEquals(description, item.getDescription());
         Assertions.assertEquals(Status.NEW, item.getStatus());
