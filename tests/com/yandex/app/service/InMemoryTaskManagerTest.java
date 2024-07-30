@@ -288,16 +288,18 @@ public class InMemoryTaskManagerTest {
      * - удаление всех эписков в коллекции 'removeAllEpics'
      */
     @Test
-    public void shouldCreateAndRemoveMultipleEpics() {
+    public void shouldCreateAndRemoveMultipleEpics() throws Exception {
         // Прверяем что колекция пустая
         Assertions.assertTrue(taskManager.getEpics().isEmpty());
 
-        Integer id1 = taskManager.createEpic(new Epic(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
+        Integer epicId1 = taskManager.createEpic(new Epic(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
+        Integer subtaskItem1 = taskManager.createSubtask(new Subtask("subtask name 1", "subtask description 1", epicId1));
 
         // Прверяем что количество эписков в колекции 1
         Assertions.assertEquals(1, taskManager.getEpics().size());
 
-        taskManager.createEpic(new Epic(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
+        Integer epicId2 = taskManager.createEpic(new Epic(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
+        Integer subtaskItem2 = taskManager.createSubtask(new Subtask("subtask name 2", "subtask description 2", epicId2));
 
         // Прверяем что количество эписков в колекции 2
         Assertions.assertEquals(2, taskManager.getEpics().size());
@@ -307,17 +309,21 @@ public class InMemoryTaskManagerTest {
         // Прверяем что количество эписков в колекции 3
         Assertions.assertEquals(3, taskManager.getEpics().size());
 
-        taskManager.removeEpicById(id1);
+        taskManager.removeEpicById(epicId1);
 
         // Прверяем что количество эписков в колекции 2
         Assertions.assertEquals(2, taskManager.getEpics().size());
         // Прверяем что эписк отсутсвует в колекции
-        Assertions.assertNull(taskManager.getSubtaskById(id1));
+        Assertions.assertNull(taskManager.getSubtaskById(epicId1));
+        // Прверяем что дачерная подзадача удалилась
+        Assertions.assertNull(taskManager.getSubtaskById(subtaskItem1));
 
         taskManager.removeAllEpics();
 
         // Прверяем что колекция пустая
         Assertions.assertTrue(taskManager.getEpics().isEmpty());
+        // Прверяем что дачерная подзадача удалилась
+        Assertions.assertNull(taskManager.getSubtaskById(subtaskItem2));
     }
 
     /** Обновление эписка */
@@ -354,4 +360,103 @@ public class InMemoryTaskManagerTest {
         Assertions.assertEquals(currentStatus, item.getStatus());
     }
     /* Region end */
+
+    // ---------------------------------------
+
+    /* Region: Subtask link Epic */
+    @Test
+    public void shouldSubtaskLinkEpic() throws Exception {
+        Integer epicId1 = taskManager.createEpic(new Epic("epic name 1", "epic description 1"));
+        Integer epicId2 = taskManager.createEpic(new Epic("epic name 2", "epic description 2"));
+        Integer subtaskId1 = taskManager.createSubtask(new Subtask("subtask name 1", "subtask description 1", epicId1));
+        Integer subtaskId2 = taskManager.createSubtask(new Subtask("subtask name 2", "subtask description 2", epicId1));
+
+        // проверяем что обе подзадачи привязаны к первому эпику
+        Epic epicItem1 = taskManager.getEpicById(epicId1);
+        Assertions.assertTrue(epicItem1.getSubtaskIds().contains(subtaskId1));
+        Assertions.assertTrue(epicItem1.getSubtaskIds().contains(subtaskId2));
+        Epic epicItem2 = taskManager.getEpicById(epicId2);
+        Assertions.assertFalse(epicItem2.getSubtaskIds().contains(subtaskId1));
+        Assertions.assertFalse(epicItem2.getSubtaskIds().contains(subtaskId2));
+
+        // изменяем для первой подзадачу родтеля (эпик)
+        Subtask subtaskItem1 = taskManager.getSubtaskById(subtaskId1);
+        taskManager.updateSubtask(new Subtask(subtaskItem1.getId(), subtaskItem1.getName(), subtaskItem1.getDescription(), subtaskItem1.getStatus(), epicId2));
+
+        // проверяем что к каждому эпику привязана по одной задаче
+        epicItem1 = taskManager.getEpicById(epicId1);
+        Assertions.assertFalse(epicItem1.getSubtaskIds().contains(subtaskId1));
+        Assertions.assertTrue(epicItem1.getSubtaskIds().contains(subtaskId2));
+        epicItem2 = taskManager.getEpicById(epicId2);
+        Assertions.assertTrue(epicItem2.getSubtaskIds().contains(subtaskId1));
+        Assertions.assertFalse(epicItem2.getSubtaskIds().contains(subtaskId2));
+    }
+    /* Region end */
+
+    /* Region: Epic status dependency from Subtasks  */
+    @Test
+    public void shouldEpicStatusDependencyFromSubtasks() throws Exception {
+        Integer epicId1 = taskManager.createEpic(new Epic("epic name 1", "epic description 1"));
+        Integer subtaskId1 = taskManager.createSubtask(new Subtask("subtask name 1", "subtask description 1", epicId1));
+        Integer subtaskId2 = taskManager.createSubtask(new Subtask("subtask name 2", "subtask description 2", epicId1));
+
+        // проверяем что обе подзадачи привязаны к родителю эпику
+        Epic epicItem1 = taskManager.getEpicById(epicId1);
+        Assertions.assertTrue(epicItem1.getSubtaskIds().contains(subtaskId1));
+        Assertions.assertTrue(epicItem1.getSubtaskIds().contains(subtaskId2));
+
+        // проверяем что обе подзадачи в статусе NEW и эпик в статусе New
+        Assertions.assertEquals(Status.NEW, taskManager.getSubtaskById(subtaskId1).getStatus());
+        Assertions.assertEquals(Status.NEW, taskManager.getSubtaskById(subtaskId2).getStatus());
+        Assertions.assertEquals(Status.NEW, taskManager.getEpicById(epicId1).getStatus());
+
+        // обновляем статус одной подзадачи в IN_PROGRESS и проверяем что эпик изменил статус на IN_PROGRESS
+        Subtask subtaskItem1 = taskManager.getSubtaskById(subtaskId1);
+        taskManager.updateSubtask(new Subtask(subtaskItem1.getId(), subtaskItem1.getName(), subtaskItem1.getDescription(), Status.IN_PROGRESS, epicId1));
+        Assertions.assertEquals(Status.IN_PROGRESS, taskManager.getSubtaskById(subtaskId1).getStatus());
+        Assertions.assertEquals(Status.NEW, taskManager.getSubtaskById(subtaskId2).getStatus());
+        Assertions.assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(epicId1).getStatus());
+
+        // обновляем статус одной подзадачи в DONE и проверяем что эпик изменил статус на IN_PROGRESS
+        subtaskItem1 = taskManager.getSubtaskById(subtaskId1);
+        taskManager.updateSubtask(new Subtask(subtaskItem1.getId(), subtaskItem1.getName(), subtaskItem1.getDescription(), Status.DONE, epicId1));
+        Assertions.assertEquals(Status.DONE, taskManager.getSubtaskById(subtaskId1).getStatus());
+        Assertions.assertEquals(Status.NEW, taskManager.getSubtaskById(subtaskId2).getStatus());
+        Assertions.assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(epicId1).getStatus());
+
+        // обновляем статус обоих подзадачи в DONE и проверяем что эпик изменил статус на DONE
+        Subtask subtaskItem2 = taskManager.getSubtaskById(subtaskId2);
+        taskManager.updateSubtask(new Subtask(subtaskItem2.getId(), subtaskItem2.getName(), subtaskItem2.getDescription(), Status.DONE, epicId1));
+        Assertions.assertEquals(Status.DONE, taskManager.getSubtaskById(subtaskId1).getStatus());
+        Assertions.assertEquals(Status.DONE, taskManager.getSubtaskById(subtaskId2).getStatus());
+        Assertions.assertEquals(Status.DONE, taskManager.getEpicById(epicId1).getStatus());
+    }
+    /* Region end */
+
+    /* Region: Epic status recalculate with link Subtasks  */
+    @Test
+    public void shouldEpicStatusRecalculateWithLinkSubtasks() throws Exception {
+        Integer epicId1 = taskManager.createEpic(new Epic("epic name 1", "epic description 1"));
+        Integer epicId2 = taskManager.createEpic(new Epic("epic name 2", "epic description 2"));
+        Integer subtaskId1 = taskManager.createSubtask(new Subtask("subtask name 1", "subtask description 1", epicId1));
+
+        Assertions.assertEquals(Status.NEW, taskManager.getEpicById(epicId1).getStatus());
+        Assertions.assertEquals(Status.NEW, taskManager.getEpicById(epicId2).getStatus());
+        Assertions.assertEquals(Status.NEW, taskManager.getSubtaskById(subtaskId1).getStatus());
+
+        Subtask subtaskItem1 = taskManager.getSubtaskById(subtaskId1);
+        taskManager.updateSubtask(new Subtask(subtaskItem1.getId(), subtaskItem1.getName(), subtaskItem1.getDescription(), Status.IN_PROGRESS, epicId1));
+
+        Assertions.assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(epicId1).getStatus());
+        Assertions.assertEquals(Status.NEW, taskManager.getEpicById(epicId2).getStatus());
+        Assertions.assertEquals(Status.IN_PROGRESS, taskManager.getSubtaskById(subtaskId1).getStatus());
+
+        subtaskItem1 = taskManager.getSubtaskById(subtaskId1);
+        taskManager.updateSubtask(new Subtask(subtaskItem1.getId(), subtaskItem1.getName(), subtaskItem1.getDescription(), Status.IN_PROGRESS, epicId2));
+
+        Assertions.assertEquals(Status.NEW, taskManager.getEpicById(epicId1).getStatus());
+        Assertions.assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(epicId2).getStatus());
+        Assertions.assertEquals(Status.IN_PROGRESS, taskManager.getSubtaskById(subtaskId1).getStatus());
+
+    }
 }

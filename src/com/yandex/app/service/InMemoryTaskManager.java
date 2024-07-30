@@ -265,6 +265,7 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
 
+        this.unlinkSubtaskIdToEpicById(prevSubtask.getId(), prevSubtask.getEpicId());
         this.linkSubtaskIdToEpicById(item.getId(), item.getEpicId());
         this.recalculateStatus(item.getEpicId());
         this.recalculateStatus(prevSubtask.getEpicId());
@@ -351,6 +352,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         // добовление связи Эпика на подзадачу
         epic.getSubtaskIds().add(subtaskId);
+        this.updateEpic(new Epic(epic.getId(), epic.getName(), epic.getDescription(), epic.getStatus(), epic.getSubtaskIds()));
     }
     /* Region end */
 }
