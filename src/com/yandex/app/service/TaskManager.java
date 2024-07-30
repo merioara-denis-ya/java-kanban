@@ -100,7 +100,7 @@ public interface TaskManager {
     /**
      * Удаление экземмляра типа Epic по идентификатору
      */
-    void removeSubtaskById(Integer id);
+    void removeSubtaskById(Integer id) throws Exception;
 
     /**
      * История просмотреных задач

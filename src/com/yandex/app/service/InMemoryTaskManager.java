@@ -231,7 +231,16 @@ public class InMemoryTaskManager implements TaskManager {
         Integer id = this.getIndex();
         item.setId(id);
         subtasks.put(id, item);
-        this.linkSubtaskIdToEpicById(id, item.getEpicId());
+        Epic epic = epics.get(item.getEpicId());
+
+        if (epic == null) {
+            throw new Exception("Epic not found by id: " + id);
+        }
+
+        epic.linkSubtaskById(id);
+
+        this.recalculateStatus(epic.getId());
+
         return id;
     }
 
@@ -248,8 +257,21 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
 
-        this.unlinkSubtaskIdToEpicById(prevSubtask.getId(), prevSubtask.getEpicId());
-        this.linkSubtaskIdToEpicById(item.getId(), item.getEpicId());
+        Epic prevEpicParent = epics.get(prevSubtask.getEpicId());
+
+        if (prevEpicParent == null) {
+            throw new Exception("Epic not found by id: " + prevSubtask.getEpicId());
+        }
+
+        prevEpicParent.unlinkSubtaskById(prevSubtask.getId());
+
+        Epic nextEpicParent = epics.get(item.getEpicId());
+
+        if (nextEpicParent == null) {
+            throw new Exception("Epic not found by id: " + item.getEpicId());
+        }
+
+        nextEpicParent.linkSubtaskById(item.getId());
         this.recalculateStatus(item.getEpicId());
         this.recalculateStatus(prevSubtask.getEpicId());
     }
@@ -272,63 +294,12 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
 
-        this.unlinkSubtaskIdToEpicById(id, prevEpic.getId());
+        prevEpic.unlinkSubtaskById(id);
     }
 
     @Override
     public List<? super Task> getHistory() {
         return inMemoryHistoryManager.getHistory();
-    }
-
-
-    private boolean checkIfSubtaskIdsIncludesSubtaskId(List<Integer> subtasks, Integer subtaskId) {
-        return subtasks.contains(subtaskId);
-    }
-
-    private void unlinkSubtaskIdToEpicById(Integer subtaskId, Integer epicId) {
-        Epic epic = epics.get(epicId);
-
-        if (epic == null) {
-            return;
-        }
-
-        List<Integer> subtaskIds = new ArrayList<>(epic.getSubtaskIds());
-        subtaskIds.remove(subtaskId);
-
-        Epic nextEpic = new Epic(epic.getId(), epic.getName(), epic.getDescription(), epic.getStatus(), subtaskIds);
-        epics.put(nextEpic.getId(), nextEpic);
-
-        this.recalculateStatus(nextEpic.getId());
-    }
-
-    /**
-     * @param subtaskId Идентификатор подзадачи
-     * @param epicId    Идентификатор Эпика
-     */
-    private void linkSubtaskIdToEpicById(Integer subtaskId, Integer epicId) throws Exception {
-        Epic epic = epics.get(epicId);
-
-        if (epic == null) {
-            throw new Exception("Exception message");
-        }
-
-        boolean isSubtaskLinkedWithEpic = this.checkIfSubtaskIdsIncludesSubtaskId(epic.getSubtaskIds(), subtaskId);
-
-        if (isSubtaskLinkedWithEpic) {
-            return;
-        }
-
-        /* Region: удаление связей эпика с подзадачей */
-        Subtask subtask = subtasks.get(subtaskId);
-
-        if (subtask != null) {
-            this.unlinkSubtaskIdToEpicById(subtaskId, subtask.getEpicId());
-        }
-        /* Region end */
-
-        // добовление связи Эпика на подзадачу
-        epic.getSubtaskIds().add(subtaskId);
-        this.updateEpic(new Epic(epic.getId(), epic.getName(), epic.getDescription(), epic.getStatus(), epic.getSubtaskIds()));
     }
     /* Region end */
 }

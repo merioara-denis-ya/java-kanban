@@ -30,6 +30,28 @@ public class Epic extends Task {
         return subtaskIds;
     }
 
+    /**
+     * Добавление идентификатора подзадачи
+     */
+    public void linkSubtaskById(Integer subtaskId) {
+        if (this.getSubtaskIds().contains(subtaskId)) {
+            return;
+        }
+
+        this.getSubtaskIds().add(subtaskId);
+    }
+
+    /**
+     * Удаление идентификатора подзадачи
+     */
+    public void unlinkSubtaskById(Integer subtaskId) {
+        if (!this.getSubtaskIds().contains(subtaskId)) {
+            return;
+        }
+
+        this.getSubtaskIds().remove(subtaskId);
+    }
+
     @Override
     public String toString() {
         return "Epic{" +
