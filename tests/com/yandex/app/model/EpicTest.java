@@ -73,6 +73,14 @@ public class EpicTest {
     }
 
     @Test
+    public void shouldUpdateStatus() {
+        Task item = new Epic(id, name, description, Status.NEW);
+        Assertions.assertEquals(Status.NEW, item.getStatus());
+        item.setStatus(Status.IN_PROGRESS);
+        Assertions.assertEquals(Status.IN_PROGRESS, item.getStatus());
+    }
+
+    @Test
     public void shouldBeEqualsToString() {
         Epic item1 = new Epic(id, name, description);
         Epic item2 = new Epic(id, name, description);

@@ -152,8 +152,7 @@ public class InMemoryTaskManager implements TaskManager {
                 return;
             }
 
-            Epic epic = new Epic(currentEpic.getId(), currentEpic.getName(), currentEpic.getDescription(), nextStatus, currentEpic.getSubtaskIds());
-            epics.put(epic.getId(), epic);
+            currentEpic.setStatus(nextStatus);
             return;
         }
 
@@ -167,9 +166,7 @@ public class InMemoryTaskManager implements TaskManager {
                 hasDoneStatus = true;
             } else if (subtask.getStatus() == Status.IN_PROGRESS) {
                 if (currentEpic.getStatus() != Status.IN_PROGRESS) {
-                    Epic epic = new Epic(currentEpic.getId(), currentEpic.getName(), currentEpic.getDescription(), Status.IN_PROGRESS, currentEpic.getSubtaskIds());
-
-                    epics.put(epic.getId(), epic);
+                    currentEpic.setStatus(Status.IN_PROGRESS);
                 }
 
                 return;
@@ -186,9 +183,7 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
 
-        Epic epic = new Epic(currentEpic.getId(), currentEpic.getName(), currentEpic.getDescription(), nextStatus, currentEpic.getSubtaskIds());
-
-        epics.put(epic.getId(), epic);
+        currentEpic.setStatus(nextStatus);
     }
     /* Region end */
 

@@ -48,6 +48,14 @@ public class TaskTest {
     }
 
     @Test
+    public void shouldUpdateStatus() {
+        Task item = new Task(id, name, description, Status.NEW);
+        Assertions.assertEquals(Status.NEW, item.getStatus());
+        item.setStatus(Status.IN_PROGRESS);
+        Assertions.assertEquals(Status.IN_PROGRESS, item.getStatus());
+    }
+
+    @Test
     public void shouldBeEqualsToString() {
         Task item1 = new Task(id, name, description);
         Task item2 = new Task(id, name, description);

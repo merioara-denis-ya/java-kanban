@@ -53,6 +53,14 @@ public class SubtaskTest {
     }
 
     @Test
+    public void shouldUpdateStatus() {
+        Task item = new Subtask(id, name, description, Status.NEW, 1);
+        Assertions.assertEquals(Status.NEW, item.getStatus());
+        item.setStatus(Status.IN_PROGRESS);
+        Assertions.assertEquals(Status.IN_PROGRESS, item.getStatus());
+    }
+
+    @Test
     public void shouldBeEqualsToString() {
         Subtask item1 = new Subtask(id, name, description, epicId);
         Subtask item2 = new Subtask(id, name, description, epicId);
