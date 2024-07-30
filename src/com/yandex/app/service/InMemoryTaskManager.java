@@ -130,8 +130,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Subtask> getSubtasksByEpicId(Integer epicId) {
-        ArrayList<Subtask> result = new ArrayList<>();
+    public List<Subtask> getSubtasksByEpicId(Integer epicId) {
+        List<Subtask> result = new ArrayList<>();
         Epic epic = epics.get(epicId);
 
         if (epic == null) {
@@ -152,7 +152,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void recalculateStatus(Integer epicId) {
-        ArrayList<Subtask> subtaskList = this.getSubtasksByEpicId(epicId);
+        List<Subtask> subtaskList = this.getSubtasksByEpicId(epicId);
         Epic currentEpic = epics.get(epicId);
         Status currentStatus = currentEpic.getStatus();
         Status nextStatus = currentEpic.getStatus();
@@ -316,7 +316,7 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
 
-        ArrayList<Integer> subtaskIds = new ArrayList<>(epic.getSubtaskIds());
+        List<Integer> subtaskIds = new ArrayList<>(epic.getSubtaskIds());
         subtaskIds.remove(subtaskId);
 
         Epic nextEpic = new Epic(epic.getId(), epic.getName(), epic.getDescription(), epic.getStatus(), subtaskIds);

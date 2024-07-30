@@ -4,7 +4,6 @@ import com.yandex.app.model.Epic;
 import com.yandex.app.model.Subtask;
 import com.yandex.app.model.Task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {
@@ -45,7 +44,7 @@ public interface TaskManager {
     void removeEpicById(Integer id);
 
     /** Получения списка экземмляров типа Subtask привязаного к родителю типа Epic */
-    ArrayList<Subtask> getSubtasksByEpicId(Integer epicId);
+    List<Subtask> getSubtasksByEpicId(Integer epicId);
 
     /** Получение всех экземмляров типа Epic */
     List<Subtask> getSubtasks();
